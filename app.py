@@ -69,24 +69,25 @@ def Match(matcher, doc):
     
     
  def get_keywords_match_2(pdf_name, words_list):
+  
       ### READ IN PDF
-      dict={}
-      doc = fitz.open(pdf_name)
-      k=pdf_name
+  dict={}
+  doc = fitz.open(pdf_name)
+  k=pdf_name
 
-      print("fitz working")
-      s=''
-      for i in range(0,doc.pageCount):
-          page = doc[i]
-          s=s+page.get_text().replace('\n','')
-      text=s
-      from spacy.matcher import Matcher
-      global nlp
-      skills_matcher, all_skill = wordslist_to_Matcher(words_list)
-#             print('Keywords for matching:', len(all_skill))
-      doc = nlp(text)
-      skills, freq = Match(skills_matcher, doc)
-      return freq
+  print("fitz working")
+  s=''
+  for i in range(0,doc.pageCount):
+      page = doc[i]
+      s=s+page.get_text().replace('\n','')
+  text=s
+  from spacy.matcher import Matcher
+  global nlp
+  skills_matcher, all_skill = wordslist_to_Matcher(words_list)
+  #             print('Keywords for matching:', len(all_skill))
+  doc = nlp(text)
+  skills, freq = Match(skills_matcher, doc)
+  return freq
   
   def get_score(result):
   found_lables = []
@@ -168,7 +169,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 
 app = Flask(__name__)
-run_with_ngrok(app)
+# run_with_ngrok(app)
 
 UPLOAD_FOLDER = './'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
