@@ -28,12 +28,9 @@ df = df.iloc[1:]
 
 df = df.dropna()
 df = df.applymap(str.lower)
-# mapped_data = dict(zip(df["keywords (must include)"],df["Elements (14)"]))
-
-df
 
 labels_principals = dict(zip(df["LABELS"],df["PRINCIPLES"]))
-# labels_principals
+
 
 labels_principals = dict(zip(df["LABELS"],df["PRINCIPLES"]))
 
