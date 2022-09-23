@@ -22,8 +22,8 @@ nlp = spacy.load('en_core_web_sm')
 
 
 df = pd.read_csv("New simplyfi dataset.csv")
-df.columns = df.iloc[0]
-df = df.iloc[1:]
+#df.columns = df.iloc[0]
+#df = df.iloc[1:]
 
 
 df = df.dropna()
