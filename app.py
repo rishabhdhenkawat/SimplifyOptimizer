@@ -11,6 +11,8 @@ import pandas as pd
 import numpy as np
 
 from collections import Counter
+from flask_cors import CORS, cross_origin
+
 
 
 import fitz
@@ -200,6 +202,7 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 
 app = Flask(__name__)
+CORS(app)
 
 UPLOAD_FOLDER = './'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
