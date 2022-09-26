@@ -193,6 +193,7 @@ from flask import Flask, render_template, Response,request, jsonify
 from flask import Flask, flash, request, redirect, render_template
 from flask import Flask, flash, request, redirect, url_for, render_template
 import os
+from flask import jsonify
 
 import requests
 import json
@@ -252,8 +253,9 @@ def upload_file():
         keywords_match = get_keywords_match_2(pdf_name, words_list)
         output = get_suggestions(keywords_match)
         
-        response = app.response_class(response=dumps(output),mimetype='application/json')
-        response.status_code = 201
+#         response = app.response_class(response=dumps(output),mimetype='application/json')
+#         response.status_code = 201
+        response = jsonify(output)
         
         return response
         
