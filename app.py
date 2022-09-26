@@ -155,6 +155,8 @@ def get_score(keywords_match):
 # final_score,final_principals
 
 suggestionsDF = pd.read_excel("Suggestions.xlsx")
+suggestionsDF = suggestionsDF.fillna('')
+
 
 
 suggestions_list = list(zip(suggestionsDF["Suggestions"],suggestionsDF["Suggestions.1"]))
@@ -178,7 +180,6 @@ def get_suggestions(keywords_match):
       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
       
    
-#   suggestions = {k: suggestions[k] for k in suggestions if not isnan(k)}
 
   result.append({"AllSuggestions":suggestions})
 
