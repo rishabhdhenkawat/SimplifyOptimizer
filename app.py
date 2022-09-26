@@ -179,7 +179,7 @@ def get_suggestions(keywords_match):
       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
       
    
-  suggestions = {k: suggestions[k] for k in suggestions if not isnan(k)}
+  suggestions = {k: suggestions[k] for k in suggestions if not isNan(k)}
 
   result.append({"AllSuggestions":suggestions})
 
