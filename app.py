@@ -138,12 +138,13 @@ def get_score(keywords_match):
 
   for i in lables_counts.keys():
     percent_matched[i] = lables_counts[i]/labels_keywords_count[i] 
-    LabelsToHighlight.append(label)
+    
 
   final_principals = []
   for label in percent_matched.keys():
     if percent_matched[label] > 0.05:
       final_principals.append(labels_principals[label])
+      LabelsToHighlight.append(label)
 
   principal_counts = Counter(final_principals)
   principal_counts = dict(principal_counts)
