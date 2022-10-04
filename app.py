@@ -32,6 +32,7 @@ dfMain = dfMain.iloc[1:]
 dfMain.dropna(inplace=True)
 dfMain.reset_index(drop=True, inplace=True)
 
+print(dfMain.head())
 df = pd.read_csv("New simplyfi dataset.csv")
 df.columns = df.iloc[0]
 df = df.iloc[1:]
