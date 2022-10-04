@@ -274,6 +274,7 @@ from flask import Flask, flash, request, redirect, render_template
 from flask import Flask, flash, request, redirect, url_for, render_template
 import os
 from flask import jsonify
+from flask import send_file
 
 import requests
 import json
@@ -338,6 +339,52 @@ def upload_file():
         response = jsonify(output)
         
         return response
+        
+    else:
+        resp = jsonify(errors)
+        resp.status_code = 500
+        return resp
+
+@app.route('/getReport', methods=['POST'])
+def upload_file():
+    # check if the post request has the file part
+    print(request.files)
+    if 'files[]' not in request.files:
+        resp = jsonify({'message' : 'No file part in the request'})
+        resp.status_code = 400
+        return resp
+ 
+    files = request.files.getlist('files[]')
+     
+    errors = {}
+    success = False
+    final_filename = ""
+    for file in files:      
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            final_filename = filename
+            success = True
+        else:
+            errors[file.filename] = 'File type is not allowed'
+
+    pdf_name = final_filename
+    if success and errors:
+        errors['message'] = 'File(s) successfully uploaded'
+        resp = jsonify(errors)
+        resp.status_code = 500
+        return resp
+    if success:
+        
+        words_list = all_keywords
+        keywords_match = get_keywords_match_2(pdf_name, words_list)
+        output = get_suggestions(keywords_match)
+        
+#         response = app.response_class(response=dumps(output),mimetype='application/json')
+#         response.status_code = 201
+        response = jsonify(output)
+        
+        return send_file('./report.pdf', attachment_filename='report.pdf')
         
     else:
         resp = jsonify(errors)
