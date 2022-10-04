@@ -346,7 +346,7 @@ def upload_file():
         return resp
 
 @app.route('/getReport', methods=['POST'])
-def upload_file():
+def upload_fileReport():
     # check if the post request has the file part
     print(request.files)
     if 'files[]' not in request.files:
