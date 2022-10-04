@@ -25,6 +25,18 @@ import spacy
 from spacy.matcher import Matcher
 nlp = spacy.load('en_core_web_sm')
 
+dfMain = pd.read_csv("New simplyfi dataset.csv")
+dfMain.columns = dfMain.iloc[1]
+dfMain = dfMain.iloc[2:]
+dfMain.dropna(inplace=True)
+dfMain.reset_index(drop=True, inplace=True)
+
+df = pd.read_csv("New simplyfi dataset.csv")
+df.columns = df.iloc[0]
+df = df.iloc[1:]
+df.dropna(inplace=True)
+df.reset_index(drop=True, inplace=True)
+df = df.applymap(str.lower)
 
 dfMain = pd.read_csv("New simplyfi dataset.csv")
 dfMain.columns = dfMain.iloc[0]
