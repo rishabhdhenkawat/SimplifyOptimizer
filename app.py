@@ -10,6 +10,12 @@ Original file is located at
 import pandas as pd
 import numpy as np
 
+
+import itertools
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+
+
 from collections import Counter
 from flask_cors import CORS, cross_origin
 from math import isnan
@@ -20,6 +26,11 @@ from spacy.matcher import Matcher
 nlp = spacy.load('en_core_web_sm')
 
 df = pd.read_csv("New simplyfi dataset.csv")
+dfMain = df
+dfMain.columns = dfMain.iloc[0]
+dfMain = dfMain.iloc[1:]
+dfMain.dropna(inplace=True)
+dfMain.reset_index(drop=True, inplace=True)
 
 
 df.dropna(inplace=True)
@@ -27,7 +38,7 @@ df.reset_index(drop=True, inplace=True)
 df = df.applymap(str.lower)
 
 
-labels_principals = dict(zip(df["LABELS"],df["PRINCIPLES"]))
+labels_principals = dict(zip(dfMain["LABELS"],df["PRINCIPLES"]))
 labels_principals
 
 df.KEYWORDS = df.KEYWORDS.str.split(',')
@@ -39,13 +50,13 @@ keywords_labels = {}
 all_keywords = []
 for i in range(1,df.shape[0]):
   for j in list(df["KEYWORDS"][i]):
-    keywords_labels[j.strip()] = df["LABELS"][i]
+    keywords_labels[j.strip()] = dfMain["LABELS"][i]
     all_keywords.append(j.strip())
 
 labels_keywords_count = {}
 
 for i in range(1,df.shape[0]):
-    labels_keywords_count[df["LABELS"][i]] = len(list(df["KEYWORDS"][i]))
+    labels_keywords_count[dfMain["LABELS"][i]] = len(list(df["KEYWORDS"][i]))
 
 """# NLP Section"""
 
@@ -115,7 +126,8 @@ def get_score(keywords_match):
   found_lables = []
   for i in list(keywords_match.keys()):
     found_lables.append(keywords_labels[i])
-
+    
+  LabelsToHighlight = []
   lables_counts = Counter(found_lables)
   lables_counts = dict(lables_counts)
 
@@ -123,6 +135,7 @@ def get_score(keywords_match):
 
   for i in lables_counts.keys():
     percent_matched[i] = lables_counts[i]/labels_keywords_count[i] 
+    LabelsToHighlight.append(label)
 
   final_principals = []
   for label in percent_matched.keys():
@@ -148,11 +161,9 @@ def get_score(keywords_match):
       final_principals[key] = per_score
 
   # final_principals  = list(principal_counts.keys())
-  return final_score,final_principals
+  return final_score,final_principals, LabelsToHighlight
 
-# final_score,final_principals = get_score(keywords_match)
 
-# final_score,final_principals
 
 suggestionsDF = pd.read_excel("Suggestions.xlsx")
 suggestionsDF = suggestionsDF.fillna('')
@@ -164,14 +175,16 @@ suggestions_list = list(zip(suggestionsDF["Suggestions"],suggestionsDF["Suggesti
 
 
 suggestions_dict = {}
+FinalSuggestionsList = []
 for i in range(len(list(suggestionsDF['Labels']))):
   suggestions_dict[suggestionsDF['Labels'][i]] = suggestions_list[i]
+  FinalSuggestionsList.append(suggestions_list[i])
 
 
 def get_suggestions(keywords_match):
 
   result = []
-  final_score,final_principals = get_score(keywords_match)
+  final_score,final_principals,LabelsToHighlight = get_score(keywords_match)
   final_principals_list = list(set(list(final_principals.keys())))
   suggestions = {}
   for i in list(suggestions_dict.keys()): 
@@ -179,13 +192,75 @@ def get_suggestions(keywords_match):
     if k in final_principals_list:
       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
       
-   
 
+  
   result.append({"AllSuggestions":suggestions})
 
   result.append({"OverallScore":final_score})
 
+  result.append({"LabelsToHighligh":LabelsToHighlight})
+  
+ 
+  # List of tuple initialization
+  tuple = FinalSuggestionsList
+  
+  # Using itertools
+  out = list(itertools.chain(*tuple))
+  my_list = out
+
+  text2 = '\n'.join(map(str, my_list))
+
+
+  doc = fitz.open("Base Report.pdf")
+
+  for pg in range(doc.pageCount):
+    page = doc[pg]
+
+    for label in LabelsToHighlight:
+      text = label.strip()
+
+      text_instances = page.searchFor(text)
+
+      for inst in text_instances:
+          highlight = page.addHighlightAnnot(inst)
+          highlight.setColors({"stroke":(1, 0, 0), "fill":(0, 0, 0)})
+          highlight.update()
+
+  displayScore = "Score: {}/9".format(result[1]['OverallScore'])
+  page = doc.new_page()
+  # the text strings, each having 3 lines
+  text0 = displayScore
+
+  text1 = "Suggestions"
+
+  # the insertion points, each with a 25 pix distance from the corners
+  p0 = fitz.Point(210, 100)
+
+  p1 = fitz.Point(210, 150)
+  p2 = fitz.Point(50, 200)
+
+  # create a Shape to draw on
+  shape = page.new_shape()
+
+  # insert the text strings
+  shape.insert_text(p0, text0,rotate=-360,fontsize=21,fontname="Times-Roman")
+  shape.insert_text(p1, text1,rotate=-360,fontsize=21,fontname="Times-Roman")
+  shape.insert_text(p2, text2,rotate=-360,fontsize=11,fontname="Times-Roman")
+
+  # store our work to the page
+  shape.commit()
+
+  text_instances = page.searchFor(text1)
+
+  for inst in text_instances:
+      highlight = page.addUnderlineAnnot(inst)
+      highlight.setColors(colors= fitz.utils.getColor('black'))
+      highlight.update()
+  doc.save("report.pdf")
   return result
+  
+#result = get_suggestions(keywords_match)
+
   
 
 
