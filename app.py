@@ -200,15 +200,30 @@ def get_suggestions(keywords_match):
   final_score,final_principals,LabelsToHighlight = get_score(keywords_match)
   final_principals_list = list(set(list(final_principals.keys())))
   suggestions = {}
-  for i in list(suggestions_dict.keys()):
-    if i in LabelsToHighlight:
-      try:
-        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
-      except:
-        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": 0}
+#   for i in list(suggestions_dict.keys()):
+#     if i in LabelsToHighlight:
+#       try:
+#         suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
+#       except:
+#         suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": 0}
         
-      FinalSuggestionsList.append(suggestions_dict[i])
+#       FinalSuggestionsList.append(suggestions_dict[i])
     
+  for i in LabelsToHighlight: 
+    k = i.strip()
+   
+    try:
+      suggestions[i] = {"Suggestions":suggestions_dict[i.strip()],"Score": final_principals[labels_principals[i]]}
+    except:
+      try:
+        suggestions[i] = {"Suggestions":suggestions_dict[i.strip()],"Score": 0}
+      except:
+        print("failed",i)
+      
+    try:
+      FinalSuggestionsList.append(suggestions_dict[i.strip()])
+    except:
+      print("failed",i)  
     
     
 #     k = i.lower()
