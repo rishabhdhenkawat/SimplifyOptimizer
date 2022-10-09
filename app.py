@@ -197,7 +197,8 @@ def get_suggestions(keywords_match):
       FinalSuggestionsList.append(suggestions_dict[i])
 
 
-  
+  if "Storage" in LabelsToHighlight:
+    LabelsToHighlight = LabelsToHighlight.remove("Storage")
   result.append({"AllSuggestions":suggestions})
 
   result.append({"OverallScore":final_score})
