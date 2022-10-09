@@ -202,8 +202,13 @@ def get_suggestions(keywords_match):
   suggestions = {}
   for i in list(suggestions_dict.keys()):
     if i in LabelsToHighlight:
+      try:
         suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
-        FinalSuggestionsList.append(suggestions_dict[i])
+      except:
+        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": 0}
+        
+      FinalSuggestionsList.append(suggestions_dict[i])
+    
     
     
 #     k = i.lower()
