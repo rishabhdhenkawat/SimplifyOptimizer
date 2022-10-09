@@ -230,7 +230,7 @@ def get_suggestions(keywords_match):
           highlight.setColors({"stroke":(1, 0, 0), "fill":(0, 0, 0)})
           highlight.update()
 
-  displayScore = "Score: {}/9".format(result[1]['OverallScore'])
+  displayScore = "Score: {}/9".format(result[1]['OverallScore']*5)
   page = doc.new_page()
   # the text strings, each having 3 lines
   text0 = displayScore
