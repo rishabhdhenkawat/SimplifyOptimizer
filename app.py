@@ -169,19 +169,29 @@ def get_score(keywords_match):
 
 
 
-suggestionsDF = pd.read_excel("Suggestions.xlsx")
+# suggestionsDF = pd.read_excel("Suggestions.xlsx")
+
+suggestionsDF = pd.read_excel("suggestions-1 (1).xlsx")
+suggestionsDF['Labels'] = suggestionsDF['Labels'].str.replace('\d+', '')
+suggestionsDF['Labels'] = suggestionsDF['Labels'].str.replace(',', '')
+suggestionsDF['Labels'] = suggestionsDF['Labels'].str.replace('.', '')
+suggestionsDF['Labels'	] = suggestionsDF['Labels'].str.replace(u'\xa0', u'')
+suggestionsDF['Labels'	] = suggestionsDF['Labels'].str.strip()
+
 suggestionsDF = suggestionsDF.fillna('')
+suggestionsDF.set_index('Labels',inplace=True)
 
-
-
-suggestions_list = list(zip(suggestionsDF["Suggestions"],suggestionsDF["Suggestions.1"]))
-
-
-
-suggestions_dict = {}
 FinalSuggestionsList = []
-for i in range(len(list(suggestionsDF['Labels']))):
-  suggestions_dict[suggestionsDF['Labels'][i]] = suggestions_list[i]
+suggestions_dict = suggestionsDF.to_dict()['Suggestions']
+
+
+# suggestions_list = list(zip(suggestionsDF["Suggestions"],suggestionsDF["Suggestions.1"]))
+
+
+
+# suggestions_dict = {}
+# for i in range(len(list(suggestionsDF['Labels']))):
+#   suggestions_dict[suggestionsDF['Labels'][i]] = suggestions_list[i]
   
 
 def get_suggestions(keywords_match):
@@ -191,10 +201,13 @@ def get_suggestions(keywords_match):
   final_principals_list = list(set(list(final_principals.keys())))
   suggestions = {}
   for i in list(suggestions_dict.keys()): 
-    k = i.lower()
-    if k in final_principals_list:
-      suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
-      FinalSuggestionsList.append(suggestions_dict[i])
+#     k = i.lower()
+#     if k in final_principals_list:
+#       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
+#       FinalSuggestionsList.append(suggestions_dict[i])
+  if i in LabelsToHighlight:
+        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
+        FinalSuggestionsList.append(suggestions_dict[i])
 
 
   if "Storage" in LabelsToHighlight:
