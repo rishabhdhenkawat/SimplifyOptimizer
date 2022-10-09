@@ -181,7 +181,7 @@ suggestionsDF['Labels'	] = suggestionsDF['Labels'].str.strip()
 suggestionsDF = suggestionsDF.fillna('')
 suggestionsDF.set_index('Labels',inplace=True)
 
-FinalSuggestionsList = []
+#FinalSuggestionsList = []
 suggestions_dict = suggestionsDF.to_dict()['Suggestions']
 
 
@@ -195,7 +195,7 @@ suggestions_dict = suggestionsDF.to_dict()['Suggestions']
   
 
 def get_suggestions(keywords_match):
-
+  FinalSuggestionsList =[]
   result = []
   final_score,final_principals,LabelsToHighlight = get_score(keywords_match)
   final_principals_list = list(set(list(final_principals.keys())))
