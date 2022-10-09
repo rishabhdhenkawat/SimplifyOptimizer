@@ -182,8 +182,7 @@ suggestions_dict = {}
 FinalSuggestionsList = []
 for i in range(len(list(suggestionsDF['Labels']))):
   suggestions_dict[suggestionsDF['Labels'][i]] = suggestions_list[i]
-  FinalSuggestionsList.append(suggestions_list[i])
-
+  
 
 def get_suggestions(keywords_match):
 
@@ -195,7 +194,8 @@ def get_suggestions(keywords_match):
     k = i.lower()
     if k in final_principals_list:
       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
-      
+      FinalSuggestionsList.append(suggestions_dict[i])
+
 
   
   result.append({"AllSuggestions":suggestions})
