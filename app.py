@@ -200,14 +200,17 @@ def get_suggestions(keywords_match):
   final_score,final_principals,LabelsToHighlight = get_score(keywords_match)
   final_principals_list = list(set(list(final_principals.keys())))
   suggestions = {}
-  for i in list(suggestions_dict.keys()): 
+  for i in list(suggestions_dict.keys()):
+    if i in LabelsToHighlight:
+        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
+        FinalSuggestionsList.append(suggestions_dict[i])
+    
+    
 #     k = i.lower()
 #     if k in final_principals_list:
 #       suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[i.lower()]}
 #       FinalSuggestionsList.append(suggestions_dict[i])
-  if i in LabelsToHighlight:
-        suggestions[i] = {"Suggestions":suggestions_dict[i],"Score": final_principals[labels_principals[i]]}
-        FinalSuggestionsList.append(suggestions_dict[i])
+  
 
 
   if "Storage" in LabelsToHighlight:
