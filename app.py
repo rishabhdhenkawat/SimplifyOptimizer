@@ -234,7 +234,7 @@ def get_suggestions(keywords_match):
   out = list(itertools.chain(*tuple))
   my_list = out
 
-  text2 = '\n'.join(map(str, my_list))
+  text2 = '\n'.join(map(str, FinalSuggestionsList))
 
 
   doc = fitz.open("Base Report.pdf")
